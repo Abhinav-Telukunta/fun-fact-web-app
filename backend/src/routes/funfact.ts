@@ -1,10 +1,10 @@
-import { Router, Request, Response, NextFunction } from 'express';
+import { Router, Request, Response } from 'express';
 import OpenAI from 'openai';
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const router = Router();
 
-const getFunfact = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const getFunfact = async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       res.sendStatus(401);
@@ -20,7 +20,7 @@ const getFunfact = async (req: Request, res: Response, next: NextFunction): Prom
     });
     res.send({ fact: response.choices[0].message.content });
   } catch (err) {
-    next(err);
+    console.error('get fun fact api failed: ', err);
   }
 };
 
