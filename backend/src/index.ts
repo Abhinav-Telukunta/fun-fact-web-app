@@ -50,7 +50,7 @@ app.get('/auth/me', (req, res) => {
       return;
     }
     const { name, email, image, favoriteMovie } = req.user as any;
-    res.json({ user: { name, email, image, favoriteMovie } });
+    res.send({ user: { name, email, image, favoriteMovie } });
 });
 
 // API routes

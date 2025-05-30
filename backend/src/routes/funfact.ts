@@ -18,7 +18,7 @@ const getFunfact = async (req: Request, res: Response, next: NextFunction): Prom
         { role: 'user', content: `Tell me one interesting trivia fact about the movie "${movie}".` }
       ]
     });
-    res.json({ fact: response.choices[0].message.content });
+    res.send({ fact: response.choices[0].message.content });
   } catch (err) {
     next(err);
   }

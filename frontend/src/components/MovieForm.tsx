@@ -1,16 +1,17 @@
 import { useState } from 'react';
 import { movieApi } from '../api';
+import axios from 'axios';
 
 export default function MovieForm({ onSaved }: { onSaved: () => void }) {
   const [movie, setMovie] = useState('');
   const onSubmit = async () => {
-    await fetch(movieApi, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ favoriteMovie: movie }),
-    });
-    onSaved();
+    try{
+      await axios.post(movieApi,{favoriteMovie: movie});
+      onSaved();
+    }
+    catch(err){
+      console.error('post movie failed: ', err);
+    }
   };
 
   return (

@@ -3,6 +3,7 @@ import LoginButton from './components/LoginButton';
 import MovieForm from './components/MovieForm';
 import { authUrl, logoutUrl, funfactApi } from './api';
 import './App.css';
+import axios from 'axios';
 
 
 interface User {
@@ -20,13 +21,12 @@ export default function App() {
   useEffect(() => {
     const bootstrap = async () => {
       try {
-        const res = await fetch(authUrl, { credentials: 'include' });
+        const res = await axios.get(authUrl);
         if (res.status === 401) {
           setUser(null);
           return;
         }
-        if (!res.ok) throw new Error(`Error ${res.status}`);
-        const data = await res.json();
+        const data = res.data;
         setUser(data.user);
       } catch (err) {
         console.error('Auth bootstrap failed:', err);
@@ -38,12 +38,20 @@ export default function App() {
 
   // Fetch a fun fact whenever we have a favoriteMovie
   useEffect(() => {
-    if (user?.favoriteMovie!=null) {
-      fetch(funfactApi, { credentials: 'include' })
-        .then(res => res.json())
-        .then(data => setFact(data.fact))
-        .catch(err => console.error('Funfact fetch error:', err));
+    const getFunFact = async () => {
+      if (user?.favoriteMovie!=null) {
+        try{
+          const res = await axios.get(funfactApi);
+          const data = res.data;
+          setFact(data.fact);
+        }
+        catch(err){
+          console.error('Fetching fun fact failed: ', err);
+        }
+      }
     }
+    getFunFact();
+
   }, [user]);
 
   if (user === null) return <LoginButton />;

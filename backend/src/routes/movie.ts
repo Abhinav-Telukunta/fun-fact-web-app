@@ -11,7 +11,6 @@ const postMovie = async (req: Request, res: Response, next: NextFunction): Promi
     }
     const { favoriteMovie } = req.body;
     await prisma.user.update({ where: { email: (req.user as any).email }, data: { favoriteMovie } });
-    res.json({ ok: true });
   } catch (err) {
     next(err);
   }
