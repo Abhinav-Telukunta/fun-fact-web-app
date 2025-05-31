@@ -10,12 +10,12 @@ interface User {
   name: string;
   email: string;
   image?: string;
-  favoriteMovie?: string;
+  movies?: string[];
 }
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
-  const [fact, setFact] = useState<string>('');
+  const [facts, setFact] = useState<Map<String,String>>(new Map());
 
   // Bootstrap session
   useEffect(() => {
@@ -39,11 +39,11 @@ export default function App() {
   // Fetch a fun fact whenever we have a favoriteMovie
   useEffect(() => {
     const getFunFact = async () => {
-      if (user?.favoriteMovie!=null) {
+      if (user?.movies!=null) {
         try{
           const res = await axios.get(funfactApi);
-          const data = res.data;
-          setFact(data.fact);
+          const factsMap = new Map<String,String>(Object.entries(res.data));
+          setFact(factsMap);
         }
         catch(err){
           console.error('Fetching fun fact failed: ', err);
@@ -66,14 +66,19 @@ export default function App() {
        <h1>Welcome, {user.name}</h1>
         <p>Email: {user.email}</p>
         {user.image && <img src={user.image} alt="Profile" width={80} />}
-        {user.favoriteMovie ? (
+        {user.movies!== undefined && user.movies.length > 0 && (
           <>
-            <h2>Your favorite movie: {user.favoriteMovie}</h2>
-            <p>Fun Fact: {fact}</p>
+            {facts &&
+              Array.from(facts.entries()).map(([movie, fact]) => (
+                <>
+                  <h2>Movie: {movie}</h2>
+                  <p>Fun Fact: {fact}</p>
+                </>
+              ))
+            }
           </>
-        ) : (
-          <MovieForm onSaved={() => window.location.reload()} />
         )}
+        <MovieForm onSaved={(response) => setUser(response)} prevMovies={user.movies===undefined?[]:user.movies}/>
     </div>
   );
 }

@@ -49,8 +49,8 @@ app.get('/auth/me', (req, res) => {
       res.sendStatus(401);
       return;
     }
-    const { name, email, image, favoriteMovie } = req.user as any;
-    res.send({ user: { name, email, image, favoriteMovie } });
+    const { name, email, image, movies } = req.user as any;
+    res.send({ user: { name, email, image, movies } });
 });
 
 // API routes
