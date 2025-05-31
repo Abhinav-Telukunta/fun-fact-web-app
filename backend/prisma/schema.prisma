@@ -11,5 +11,5 @@ model User {
   name          String
   email         String  @id
   image         String?
-  favoriteMovie String?
+  movies        String[]
 }
